@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -39,11 +40,10 @@ namespace TCP_Server
 
                 if (command == "GetAll" && string.IsNullOrEmpty(parameter))
                 {
-                    var Books = repo.GetAll();
+                    List<Book> books = repo.GetAll();
 
                     var options = new JsonSerializerOptions { WriteIndented = true };
-                    string jsonString = JsonSerializer.Serialize(Books, options);
-
+                    string jsonString = JsonSerializer.Serialize(books, options);
 
                     writer.WriteLine(jsonString);
                     writer.Flush();
@@ -51,13 +51,37 @@ namespace TCP_Server
                 else if (command == "Get" && BookRepo.BookList.Any(b => b.Isbn == parameter))
                 {
                     Book foundBook = repo.Get(parameter);
+
                     var options = new JsonSerializerOptions { WriteIndented = true };
                     string jsonString = JsonSerializer.Serialize(foundBook, options);
+
+                    writer.WriteLine(jsonString);
+                    writer.Flush();
                 }
-
-
-
-                writer.Flush();
+                else if (command == "Save" && !string.IsNullOrEmpty(parameter))
+                {
+                    try
+                    {
+                        Book newBook = JsonSerializer.Deserialize<Book>(parameter);
+                        repo.Add(newBook);
+                        writer.WriteLine("Book was added successfully");
+                        writer.Flush();
+                    }
+                    catch (Exception e)
+                    {
+                        writer.WriteLine(e.Message);
+                        writer.WriteLine("Invalid JSON, please check the formatting");
+                        writer.Flush();
+                    }
+                }
+                else
+                {
+                    writer.WriteLine("Invalid Command. Syntax is GetAll, Get or Save");
+                    writer.WriteLine("GetAll is followed by an empty line. \n" +
+                                     "Get is followed by the book isbn \n" +
+                                     "Save is followed by the JSON of the book you want to add");
+                    writer.Flush();
+                }
             }
         }
     }
