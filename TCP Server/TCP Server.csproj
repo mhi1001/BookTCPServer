@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>TCP_Server</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BookClassLibrary">
+      <HintPath>..\..\SimpleRESTService\SimpleRESTService\dll\BookClassLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
