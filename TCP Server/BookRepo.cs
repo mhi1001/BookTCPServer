@@ -25,10 +25,9 @@ namespace TCP_Server
         {
             return BookList.Find(book => book.Isbn == isbn);
         }
-        public Book Add(Book newBook)
+        public void Add(Book newBook)
         {
             BookList.Add(newBook);
-            return newBook;
         }
     }
 }
